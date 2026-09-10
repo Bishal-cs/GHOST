@@ -7,7 +7,7 @@
 #     subprocess.run("pip install googlesearch-python")
 #     from googlesearch import search
 
-# FILE_PATH = "C:\\Users\\bisha\\OneDrive\\Desktop\\Ghost\\data\\user_data\\websites.json"
+# FILE_PATH = r"data\user_data\websites.json"
 # try:
 #     with open(FILE_PATH, "r") as file:
 #         websites = json.load(file)
@@ -57,6 +57,8 @@
 
 # if __name__ == "__main__":
 #     open_website("InstaGram")
+
+
 import json
 import subprocess
 import webbrowser
@@ -67,7 +69,7 @@ except ModuleNotFoundError:
     subprocess.run(["pip", "install", "googlesearch-python"])
     from googlesearch import search
 
-FILE_PATH = "C:\\Users\\bisha\\OneDrive\\Desktop\\Ghost\\data\\user_data\\websites.json"
+FILE_PATH = r"data\user_data\websites.json"
 
 # Load cache safely
 try:
@@ -138,5 +140,5 @@ def open_website(webname: str) -> str:
 
 if __name__ == "__main__":
     # Test execution out of the agent loop
-    result = open_website("Instagram")
+    result = open_website("hugging face")
     print(f"Returned to LLM: {result}")
