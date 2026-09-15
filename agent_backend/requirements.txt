@@ -1,0 +1,7 @@
+fastapi 
+uvicorn
+pyautogui
+google-genai 
+edge-tts
+duckduckgo-search
+pydantic
