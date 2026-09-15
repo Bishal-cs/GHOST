@@ -37,14 +37,14 @@ export default function GhostDashboard() {
   const [isMuted, setIsMuted] = useState<boolean>(false);
   const [inputText, setInputText] = useState<string>('');
   const [transcript, setTranscript] = useState<string>('');
-  const [logs, setLogs] = useState<LogMessage[]>([
-    {
-      id: '1',
-      sender: 'system',
-      text: 'GHOST Core v2.5 initialized. System online and connected.',
-      timestamp: new Date().toLocaleTimeString(),
-    },
-  ]);
+const [logs, setLogs] = useState<LogMessage[]>([
+  {
+    id: '1',
+    sender: 'system',
+    text: 'GHOST Core v2.5 initialized. System online and connected.',
+    timestamp: '00:00:00 AM',
+  },
+]);
   const [latency, setLatency] = useState<number>(24);
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(true);
 
@@ -309,7 +309,7 @@ export default function GhostDashboard() {
 
         audio.onended = () => {
           setAgentState('idle');
-          // Resume continuous listening if Jarvis toggle is active
+          // Resume continuous listening if Ghost toggle is active
           if (isContinuousRef.current) {
             startSpeechRecognition();
           }
@@ -337,7 +337,7 @@ export default function GhostDashboard() {
   };
 
   // ---------------------------------------------------------
-  // 4. CONTINUOUS SPEECH RECOGNITION (JARVIS MODE)
+  // 4. CONTINUOUS SPEECH RECOGNITION (Ghost MODE)
   // ---------------------------------------------------------
   const startSpeechRecognition = useCallback(() => {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
@@ -401,7 +401,7 @@ export default function GhostDashboard() {
     recognition.start();
   }, [agentState]);
 
-  const toggleContinuousJarvisMode = () => {
+  const toggleContinuousGhostMode = () => {
     if (isContinuousListening) {
       setIsContinuousListening(false);
       isContinuousRef.current = false;
@@ -522,7 +522,7 @@ export default function GhostDashboard() {
             <div className="flex items-center justify-between text-slate-400">
               <span className="flex items-center space-x-1">
                 <Radio className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Jarvis Mode</span>
+                <span>Ghost Mode</span>
               </span>
               <span
                 className={
@@ -541,9 +541,9 @@ export default function GhostDashboard() {
         <main className="lg:col-span-6 flex flex-col items-center justify-center space-y-6">
           {/* TOP CONTROLS (Above Blob) */}
           <div className="flex items-center space-x-4">
-            {/* Continuous Hands-Free Jarvis Listening Toggle */}
+            {/* Continuous Hands-Free Ghost Listening Toggle */}
             <button
-              onClick={toggleContinuousJarvisMode}
+              onClick={toggleContinuousGhostMode}
               className={`flex items-center space-x-2.5 px-5 py-2.5 rounded-full font-mono text-xs font-semibold tracking-wide transition-all duration-300 shadow-lg ${
                 isContinuousListening
                   ? 'bg-emerald-500 text-slate-950 shadow-emerald-500/30 scale-105 ring-2 ring-emerald-400'
@@ -556,7 +556,7 @@ export default function GhostDashboard() {
                 }`}
               />
               <span>
-                {isContinuousListening ? 'JARVIS LISTENING ACTIVE' : 'ENABLE CONTINUOUS SPEAK'}
+                {isContinuousListening ? 'Ghost LISTENING ACTIVE' : 'ENABLE CONTINUOUS SPEAK'}
               </span>
             </button>
 
@@ -623,7 +623,7 @@ export default function GhostDashboard() {
                   >
                     [{log.sender.toUpperCase()}]
                   </span>
-                  <span>{log.timestamp}</span>
+                  <span suppressHydrationWarning>{log.timestamp}</span>
                 </div>
                 <p className="text-slate-300 bg-slate-950/50 p-2 rounded border border-slate-800/60 leading-relaxed">
                   {log.text}

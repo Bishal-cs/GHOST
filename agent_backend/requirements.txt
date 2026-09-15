@@ -5,3 +5,6 @@ google-genai
 edge-tts
 duckduckgo-search
 pydantic
+mtranslate
+pygame
+dotenv
