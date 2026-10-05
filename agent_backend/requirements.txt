@@ -8,3 +8,5 @@ pydantic
 mtranslate
 pygame
 dotenv
+webdriver_manager
+selenium

@@ -79,5 +79,5 @@ def open_website(webname: str) -> str:
 
 if __name__ == "__main__":
     # Test execution out of the agent loop
-    result = open_website("hugging face")
+    result = open_website("Google")
     print(f"Returned to LLM: {result}")

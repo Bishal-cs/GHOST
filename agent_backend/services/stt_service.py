@@ -1,61 +1,54 @@
-import os
-import pygame
-import asyncio
-import edge_tts
-import threading
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
-# Voice = "bn-IN-TanishaaNeural"
-# Voice = "ml-IN-SobhanaNeural" 
-# Voice = "en-US-AriaNeural" 
-# Voice = "en-US-MichelleNeural"
-# Voice = "en-US-AnaNeural"
-Voice = "en-US-JennyNeural"
-# Voice = "en-US-EricNeural"
+chrome_options = Options()
+chrome_options.add_argument("--use-fake-ui-for-media-stream")
+chrome_options.add_argument("--headless=new")  # Remove this if you want to see the browser UI
+# Manually set the path to the ChromeDriver executable
 
-BUFFER_SIZE = 1024
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service, options=chrome_options)
 
-def remove_file(file_path):
-    max_attempts = 3
-    attempts = 0
-    while attempts < max_attempts:
-        with open(file_path, "wb"):
-            pass
-        os.remove(file_path)
-        break
-async def amain(text, output_file) -> None:
+# chrome_driver_path = "Speechtotext\\chromedriver.exe"
+# service = Service(executable_path=chrome_driver_path)
+# Setting up the Chrome driver with the service and options
+driver = webdriver.Chrome(service=service, options=chrome_options)
+# Creating the URL for the website using the current working directory
+website = "https://allorizenproject1.netlify.app/"
+# Opening the website in the Chrome browser
+driver.get(website)
+Recog_File = "../data/user_data/input.txt"  # Path to the file where recognized text will be saved
+def listen():
     try:
-        cm_text = edge_tts.Communicate(text, Voice)
-        await cm_text.save(output_file)
-        playback_thread = threading.Thread(target=play_audio, args=(output_file,))
-        playback_thread.start()
-        playback_thread.join()
+        start_button = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, 'startButton')))
+        start_button.click()
+        print("Listening...")
+        output_text = ""
+        is_second_click = False
+        while True:
+            output_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, 'output')))
+            current_text = output_element.text.strip()
+            if "Start Listening" in start_button.text and is_second_click:
+                if output_text:
+                    is_second_click = False
+            elif "Listening..." in start_button.text:
+                is_second_click = True
+            if current_text != output_text:
+                output_text = current_text
+                with open(Recog_File, "w") as file:
+                    file.write(output_text.lower())
+                    print("User:", output_text)
+    except KeyboardInterrupt:
+        print("Process interrupted by user.")
     except Exception as e:
-        print
+        print("An error occurred:", e)
     finally:
-        remove_file(output_file)
+        driver.quit()
 
-def play_audio(file_path):
-    try:
-        pygame.init()
-        pygame.mixer.init()
-        sound = pygame.mixer.Sound(file_path)
-        sound.play()
-        while pygame.mixer.get_busy():
-            pygame.time.Clock().tick(10)
-        pygame.quit()
-    except Exception as e:
-        print(e)
-
-def speak(Text, output_file=None):
-    output_file = "user_data/speech.wav"
-    try:
-        if output_file is None:
-            output_file = os.path.join(os.getcwd(),"user_data", "speech.wav")
-        asyncio.run(amain(Text, output_file))
-    except Exception as e:
-        print(e)
-        
 if __name__ == "__main__":
-    while True:
-        x = input("Enter the text: ")
-        speak(x)
+    listen()
